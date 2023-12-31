@@ -72,11 +72,17 @@ func (p *Puzzle) Solve() {
 				}
 
 				p.Possibles(byte(i), byte(j))
+
+				if x == 6 && i == 3 && j == 4 {
+					for _, pos := range p.Pos[byte(i)][byte(j)] {
+						p.RowCanHaveNumber(pos, byte(i))
+					}
+				}
 			}
 		}
 
 		for _, number := range p.ToSolve {
-			p.solveOny1s(number)
+			p.solveOnly1s(number)
 		}
 
 		p.updateToSolve()
@@ -84,7 +90,40 @@ func (p *Puzzle) Solve() {
 	}
 }
 
-func (p *Puzzle) solveOny1s(number byte) {
+func (p *Puzzle) Other(r, c byte) {
+	for _, pos := range p.Pos[r][c] {
+		p.RowCanHaveNumber(pos, r)
+	}
+}
+
+func (p *Puzzle) RowCanHaveNumber(val byte, r byte) {
+	var canHave [mx]bool
+	qty := 0
+	var lastIndex byte
+	for i, b := range p.Row(r) {
+		c := byte(i)
+		if *b != 0 {
+			canHave[i] = false
+			continue
+		}
+		if p.Column(c).hasNumber(val) {
+			canHave[i] = false
+			continue
+		}
+		if p.Square(whichSquare(r, c)).hasNumber(val) {
+			canHave[i] = false
+			continue
+		}
+		canHave[i] = true
+		qty++
+		lastIndex = c
+	}
+	if qty == 1 {
+		p.solvedCell(&p.Cells[r][lastIndex], val)
+	}
+}
+
+func (p *Puzzle) solveOnly1s(number byte) {
 	var cantBe [mx][mx]bool
 	var hasNumRow, hasNumSquare, hasNumCol [mx]bool
 	for i := byte(0); i < mx; i++ {
