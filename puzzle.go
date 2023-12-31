@@ -5,8 +5,6 @@ import (
 	"errors"
 	"fmt"
 	"log"
-	"strconv"
-	"strings"
 )
 
 const mx byte = 9
@@ -26,23 +24,19 @@ func (p *puzzle) UnsolvedCells() (u byte) {
 	return
 }
 
-func loadPuzzle(s string) (p puzzle, err error) {
-	rows := strings.Split(s, "\n")
-	for i, cells := range rows {
-		if byte(len(cells)) != mx {
-			log.Panicln("incorrect input")
+func loadPuzzle(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p puzzle, err error) {
+	for i, row := range []string{row1, row2, row3, row4, row5, row6, row7, row8, row9} {
+		if len(row) != int(mx) {
+			log.Panicf("row %d length should be %d, not %d.", i, mx, len(row))
 		}
-		for j, c := range cells {
-			if c == ' ' {
+
+		for j, cell := range row {
+			// Ignore non numeric runes.
+			if cell < '0' || cell > '9' {
 				continue
 			}
 
-			u, err := strconv.ParseUint(string(c), 10, 4)
-			if err != nil || u > uint64(mx) {
-				log.Panicln("incorrect input")
-			}
-
-			p[i][j] = byte(u)
+			p[i][j] = byte(cell - '0')
 		}
 	}
 
@@ -139,7 +133,8 @@ func printRow(r [mx]byte) (s string) {
 		if cell == 0 {
 			buf.WriteString(".")
 		} else {
-			buf.WriteString(strconv.Itoa(int(cell)))
+			// Write cell's value as a number.
+			buf.WriteByte(cell + '0')
 		}
 	}
 
