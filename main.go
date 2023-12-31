@@ -5,7 +5,7 @@ import "log"
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	puz := loadPuzzle(
+	puz := Load(
 		" 654     ",
 		" 3   5 76",
 		"       2 ",
@@ -22,7 +22,7 @@ func main() {
 	puz.Print()
 }
 
-/*puz, err := loadPuzzle(` 5     1
+/*puz, err := Load(` 5     1
 3 2   9 7
  6 9 7 5
   86 17
@@ -55,7 +55,7 @@ func main() {
 	8: row(0, 0, 1, 0, 6, 0, 0, 0, 0),
 }*/
 
-/*	puz := loadPuzzle(` 5     1
+/*	puz := Load(` 5     1
 	3 2   9 7
 	 6 9 7 5
 	  86 17
@@ -65,7 +65,7 @@ func main() {
 	5 4   3 1
 	 1     2 `)*/
 
-/*	puz := loadPuzzle(` 4 8    5
+/*	puz := Load(` 4 8    5
 	 9     3
 	3 8  7  2
 	 3    9
@@ -75,7 +75,7 @@ func main() {
 	  4
 	8 25   1 `)*/
 
-/*	puz := loadPuzzle(`  1     8
+/*	puz := Load(`  1     8
 	 2  9 5 6
 	9  4
 	  7  1
@@ -85,7 +85,7 @@ func main() {
 	    5  8
 	  67  3 5`)*/
 
-//	puz := loadPuzzle(`43 5 69
+//	puz := Load(`43 5 69
 // 9      8
 //     2
 //  7    1
@@ -96,7 +96,7 @@ func main() {
 //3   8    `)
 
 /*
-		puz := loadPuzzle(` 4 8    5
+		puz := Load(` 4 8    5
 	 9     3
 	3 8  7  2
 	 3
@@ -106,7 +106,7 @@ func main() {
 	  4
 	8 25   1 `)*/ /*
 
-		puz := loadPuzzle(`   5 9  6
+		puz := Load(`   5 9  6
 	 1
 	54 8   9
 	89 4   6
