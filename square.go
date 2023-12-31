@@ -106,14 +106,14 @@ func contains(row, column, square *group, val byte) bool {
 }
 
 func Possibles(cell *byte, row, column, square *group) (b []byte) {
-	for i := byte(1); i <= mx; i++ {
+	for _, i := range toSolve {
 		if !contains(row, column, square, i) {
 			b = append(b, i)
 		}
 	}
 
 	if len(b) == 1 {
-		*cell = b[0]
+		solvedCell(cell, b[0])
 		return nil
 	}
 	return
