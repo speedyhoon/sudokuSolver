@@ -66,7 +66,7 @@ func (p *Puzzle) updateToSolve() {
 
 func (p *Puzzle) Solve() {
 	var prev byte
-	for x := 0; p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() && x <= 99; x++ {
+	for p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() {
 		prev = p.UnsolvedCells()
 
 		for i := range p.Cells {
@@ -77,10 +77,8 @@ func (p *Puzzle) Solve() {
 
 				p.Possibles(byte(i), byte(j))
 
-				if x == 6 && i == 3 && j == 4 {
-					for _, pos := range p.Cells[byte(i)][byte(j)].Pos {
-						p.RowCanHaveNumber(pos, byte(i))
-					}
+				for _, pos := range p.Cells[byte(i)][byte(j)].Pos {
+					p.RowCanHaveNumber(pos, byte(i))
 				}
 			}
 		}
@@ -94,17 +92,11 @@ func (p *Puzzle) Solve() {
 	}
 }
 
-func (p *Puzzle) Other(r, c byte) {
-	for _, pos := range p.Cells[r][c].Pos {
-		p.RowCanHaveNumber(pos, r)
-	}
-}
-
 func (p *Puzzle) RowCanHaveNumber(val byte, r byte) {
 	var qty, lastIndex byte
 	for i, b := range p.Row(r) {
 		c := byte(i)
-		if b.Value != 0 || p.Column(c).hasNumber(val) || p.Square(whichSquare(r, c)).hasNumber(val) {
+		if b.Value != 0 || p.Row(r).hasNumber(val) || p.Column(c).hasNumber(val) || p.Square(whichSquare(r, c)).hasNumber(val) {
 			continue
 		}
 
