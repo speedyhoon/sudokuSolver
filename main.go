@@ -5,7 +5,7 @@ import "log"
 func main() {
 	log.SetFlags(log.Lshortfile)
 
-	puz, err := loadPuzzle(
+	puz := loadPuzzle(
 		" 654     ",
 		" 3   5 76",
 		"       2 ",
@@ -16,11 +16,6 @@ func main() {
 		"      1  ",
 		"8   9    ",
 	)
-
-	if err != nil {
-		log.Println(err)
-		return
-	}
 
 	puz.Print()
 	puz.Solve()
