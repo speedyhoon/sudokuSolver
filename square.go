@@ -119,9 +119,9 @@ func (p *Puzzle) Possibles(r, c byte) {
 
 	if len(b) == 1 {
 		p.solvedCell(&p.Cells[r][c], b[0])
+	} else {
+		p.Cells[r][c].Pos = b
 	}
-
-	p.Cells[r][c].Pos = b
 }
 
 func squareBool(p [mx][mx]bool, index byte) [mx]bool {
