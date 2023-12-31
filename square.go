@@ -105,18 +105,23 @@ func contains(row, column, square *Group, val byte) bool {
 	return row.has(val) || column.has(val) || square.has(val)
 }
 
-func (p *Puzzle) Possibles(cell *byte, row, column, square *Group) (b []byte) {
-	for _, i := range p.ToSolve {
-		if !contains(row, column, square, i) {
-			b = append(b, i)
+func (p *Puzzle) Possibles(r, c byte) {
+	row := p.Row(r)
+	column := p.Column(c)
+	square := p.Square(whichSquare(r, c))
+	var b []byte
+
+	for _, list := range p.Pos[r][c] {
+		if !contains(row, column, square, list) {
+			b = append(b, list)
 		}
 	}
 
 	if len(b) == 1 {
-		p.solvedCell(cell, b[0])
-		return nil
+		p.solvedCell(&p.Cells[r][c], b[0])
 	}
-	return
+
+	p.Pos[r][c] = b
 }
 
 func squareBool(p [mx][mx]bool, index byte) [mx]bool {

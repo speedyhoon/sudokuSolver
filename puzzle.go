@@ -14,7 +14,8 @@ type Group [mx]*byte
 
 type Puzzle struct {
 	Cells    [mx][mx]byte
-	ToSolve  []byte // ToSolve stores which numbers need to be solved.
+	Pos      [mx][mx][]byte // Cell possibilities
+	ToSolve  []byte         // ToSolve stores which numbers need to be solved.
 	ValueQty [mx + 1]byte
 }
 
@@ -32,8 +33,9 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 
 		for j, cell := range row {
 			// Ignore non numeric runes.
-			if cell < '0' || cell > '9' {
+			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
+				p.Pos[i][j] = p.ToSolve
 				continue
 			}
 
@@ -59,19 +61,17 @@ func (p *Puzzle) updateToSolve() {
 }
 
 func (p *Puzzle) Solve() {
-	pos := [mx][mx][]byte{}
-
-	unsolved := mx * mx
 	var prev byte
-	for x := 0; prev != unsolved && x <= 99; x++ {
-		prev = unsolved
+	for x := 0; p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() && x <= 99; x++ {
+		prev = p.UnsolvedCells()
 
 		for i := range p.Cells {
 			for j := range p.Cells[i] {
 				if p.Cells[i][j] != 0 {
 					continue
 				}
-				pos[i][j] = p.Possibles(&p.Cells[i][j], p.Row(byte(i)), p.Column(byte(j)), p.Square(whichSquare(byte(i), byte(j))))
+
+				p.Possibles(byte(i), byte(j))
 			}
 		}
 
@@ -80,7 +80,7 @@ func (p *Puzzle) Solve() {
 		}
 
 		p.updateToSolve()
-		log.Println("unsolved cell quantity:", p.UnsolvedCells())
+		log.Println("unsolved cell quantity:", p.UnsolvedCells(), "to complete:", p.ToSolve)
 	}
 }
 
