@@ -5,13 +5,13 @@ import "fmt"
 func (g *Group) solve() {
 	m := g.emptyCells()
 	if len(m) == 1 {
-		*g[m[0]] = g.missingNumbers()[0]
+		g[m[0]].Value = g.missingNumbers()[0]
 	}
 }
 
 func (g *Group) emptyCells() (indexes []int) {
 	for i, b := range g {
-		if *b == 0 {
+		if b.Value == 0 {
 			indexes = append(indexes, i)
 		}
 	}
@@ -21,7 +21,7 @@ func (g *Group) emptyCells() (indexes []int) {
 
 func (g *Group) hasNumber(number byte) bool {
 	for _, b := range g {
-		if *b == number {
+		if b.Value == number {
 			return true
 		}
 	}

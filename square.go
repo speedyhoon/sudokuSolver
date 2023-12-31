@@ -94,7 +94,7 @@ func (p *Puzzle) Square(index byte) *Group {
 
 func (g *Group) has(val byte) bool {
 	for _, b := range g {
-		if *b == val {
+		if b.Value == val {
 			return true
 		}
 	}
@@ -111,7 +111,7 @@ func (p *Puzzle) Possibles(r, c byte) {
 	square := p.Square(whichSquare(r, c))
 	var b []byte
 
-	for _, list := range p.Pos[r][c] {
+	for _, list := range p.Cells[r][c].Pos {
 		if !contains(row, column, square, list) {
 			b = append(b, list)
 		}
@@ -121,7 +121,7 @@ func (p *Puzzle) Possibles(r, c byte) {
 		p.solvedCell(&p.Cells[r][c], b[0])
 	}
 
-	p.Pos[r][c] = b
+	p.Cells[r][c].Pos = b
 }
 
 func squareBool(p [mx][mx]bool, index byte) [mx]bool {

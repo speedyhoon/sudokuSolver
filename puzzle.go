@@ -10,13 +10,17 @@ const mx byte = 9
 const mn byte = 1
 
 // Group is a group of cells either as a row, column or square.
-type Group [mx]*byte
+type Group [mx]*Cell
 
 type Puzzle struct {
-	Cells    [mx][mx]byte
-	Pos      [mx][mx][]byte // Cell possibilities
-	ToSolve  []byte         // ToSolve stores which numbers need to be solved.
+	Cells    [mx][mx]Cell
+	ToSolve  []byte // ToSolve stores which numbers need to be solved.
 	ValueQty [mx + 1]byte
+}
+
+type Cell struct {
+	Value byte
+	Pos   []byte // Possibilities.
 }
 
 func (p *Puzzle) UnsolvedCells() (u byte) {
@@ -35,13 +39,13 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 			// Ignore non numeric runes.
 			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
-				p.Pos[i][j] = p.ToSolve
+				p.Cells[i][j].Pos = p.ToSolve
 				continue
 			}
 
 			value := byte(cell - '0')
 			p.ValueQty[value]++
-			p.Cells[i][j] = value
+			p.Cells[i][j].Value = value
 		}
 	}
 
@@ -67,14 +71,14 @@ func (p *Puzzle) Solve() {
 
 		for i := range p.Cells {
 			for j := range p.Cells[i] {
-				if p.Cells[i][j] != 0 {
+				if p.Cells[i][j].Value != 0 {
 					continue
 				}
 
 				p.Possibles(byte(i), byte(j))
 
 				if x == 6 && i == 3 && j == 4 {
-					for _, pos := range p.Pos[byte(i)][byte(j)] {
+					for _, pos := range p.Cells[byte(i)][byte(j)].Pos {
 						p.RowCanHaveNumber(pos, byte(i))
 					}
 				}
@@ -91,7 +95,7 @@ func (p *Puzzle) Solve() {
 }
 
 func (p *Puzzle) Other(r, c byte) {
-	for _, pos := range p.Pos[r][c] {
+	for _, pos := range p.Cells[r][c].Pos {
 		p.RowCanHaveNumber(pos, r)
 	}
 }
@@ -102,7 +106,7 @@ func (p *Puzzle) RowCanHaveNumber(val byte, r byte) {
 	var lastIndex byte
 	for i, b := range p.Row(r) {
 		c := byte(i)
-		if *b != 0 {
+		if b.Value != 0 {
 			canHave[i] = false
 			continue
 		}
@@ -134,7 +138,7 @@ func (p *Puzzle) solveOnly1s(number byte) {
 
 	for i := byte(0); i < mx; i++ {
 		for j := byte(0); j < mx; j++ {
-			cantBe[i][j] = hasNumRow[i] || hasNumSquare[whichSquare(i, j)] || hasNumCol[j] || p.Cells[i][j] != 0
+			cantBe[i][j] = hasNumRow[i] || hasNumSquare[whichSquare(i, j)] || hasNumCol[j] || p.Cells[i][j].Value != 0
 		}
 	}
 
@@ -146,8 +150,9 @@ func (p *Puzzle) solveOnly1s(number byte) {
 	}
 }
 
-func (p *Puzzle) solvedCell(cell *byte, value byte) {
-	*cell = value
+func (p *Puzzle) solvedCell(cell *Cell, value byte) {
+	cell.Value = value
+	cell.Pos = nil
 	p.ValueQty[0]--
 	p.ValueQty[value]++
 }
@@ -178,18 +183,18 @@ func (p *Puzzle) Print() {
 	fmt.Println("unsolved cell quantity:", p.UnsolvedCells())
 }
 
-func printRow(r [mx]byte) (s string) {
+func printRow(r [mx]Cell) (s string) {
 	buf := bytes.NewBufferString("[")
 	for i, cell := range r {
 		if i != 0 {
 			buf.WriteString(" ")
 		}
 
-		if cell == 0 {
+		if cell.Value == 0 {
 			buf.WriteString(".")
 		} else {
 			// Write cell's value as a number.
-			buf.WriteByte(cell + '0')
+			buf.WriteByte(cell.Value + '0')
 		}
 	}
 
@@ -209,16 +214,16 @@ func (g *Group) check(typ string, X byte) (ok bool /*, number byte, dup1, dup2 i
 	x := make(map[byte]int)
 	var index int
 	for i, b := range g {
-		if *b == 0 {
+		if b.Value == 0 {
 			continue
 		}
 
-		index, ok = x[*b]
+		index, ok = x[b.Value]
 		if ok {
 			log.Printf("%s %d contains duplicate number %d in cells %d and %d", typ, X+1, *b, index+1, i+1)
 			return false //, *b, i, dup1
 		}
-		x[*b] = i
+		x[b.Value] = i
 	}
 	return true //, 0 ,0 ,0
 }
