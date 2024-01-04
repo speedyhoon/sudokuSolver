@@ -53,10 +53,35 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 		}
 	}
 
-	p.updateToSolve()
 	p.check()
 
+	p.updateToSolve()
+	p.updatePossibilities()
+
 	return p
+}
+
+func (p *Puzzle) updatePossibilities() {
+	for r := byte(0); r < mx; r++ {
+		row := p.Row(r)
+		for c := byte(0); c < mx; c++ {
+			if p.Cells[r][c].Value != 0 {
+				continue
+			}
+
+			column := p.Column(c)
+			square := p.Square(whichSquare(r, c))
+			var b []byte
+
+			for _, pos := range p.Cells[r][c].Pos {
+				if !contains(row, column, square, pos) {
+					b = append(b, pos)
+				}
+			}
+
+			p.Cells[r][c].Pos = b
+		}
+	}
 }
 
 func (p *Puzzle) updateToSolve() {
