@@ -85,15 +85,26 @@ func (p *Puzzle) Solve() {
 	p.updatePossibilities()
 
 	var prev int
+	z := 0
 	for p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() {
 		prev = p.UnsolvedCells()
-
+		z++
 		for r := byte(0); r < mx; r++ {
 			for c := byte(0); c < mx; c++ {
 				if p.Cells[r][c].Value != 0 {
 					continue
 				}
 
+				for i := 0; i < len(p.Cells[r][c].Pos); i++ {
+					pos := p.Cells[r][c].Pos[i]
+					if p.Cells[r][c].ColHasNum(p, pos) {
+						p.Cells[r][c].Pos = Remove(p.Cells[r][c].Pos, i)
+						i--
+					}
+					if len(p.Cells[r][c].Pos) == 1 {
+						p.solvedCell(&p.Cells[r][c], p.Cells[r][c].Pos[0])
+					}
+				}
 				for _, pos := range p.Cells[r][c].Pos {
 					p.RowCanHaveNumber(pos, r)
 					p.ColCanHaveNumber(pos, c)

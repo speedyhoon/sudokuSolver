@@ -185,3 +185,67 @@ func squareBool(p [mx][mx]bool, index byte) [mx]bool {
 	log.Panicf("incorrect square index %d, expected 0-%d.", index, mx-1)
 	return [mx]bool{}
 }
+
+func (g *Group) squareColsHasNum(number byte) (column0, column1, column2 bool) {
+	column0 = g[0].hasPos(number) || g[3].hasPos(number) || g[6].hasPos(number)
+	column1 = g[1].hasPos(number) || g[4].hasPos(number) || g[7].hasPos(number)
+	column2 = g[2].hasPos(number) || g[5].hasPos(number) || g[8].hasPos(number)
+
+	return column0 && !column1 && !column2,
+		!column0 && column1 && !column2,
+		!column0 && !column1 && column2
+}
+
+func (g *Group) squareColHasNum(col, number byte) bool {
+	column1 := g[0].hasPos(number) || g[3].hasPos(number) || g[6].hasPos(number)
+	column2 := g[1].hasPos(number) || g[4].hasPos(number) || g[7].hasPos(number)
+	column3 := g[2].hasPos(number) || g[5].hasPos(number) || g[8].hasPos(number)
+
+	// Convert column index into square column index.
+	switch col % 3 {
+	case 0:
+		return column1 && !column2 && !column3
+	case 1:
+		return !column1 && column2 && !column3
+	case 2:
+		return !column1 && !column2 && column3
+	}
+
+	log.Panicf("not a valid column %d", col)
+	return false
+}
+
+func (c *Cell) hasPos(number byte) bool {
+	for _, pos := range c.Pos {
+		if pos == number {
+			return true
+		}
+	}
+	return false
+}
+
+func adjacentSquaresVertical(squareIndex byte) (top byte, bottom byte) {
+	switch squareIndex {
+	case 0:
+		return 3, 6
+	case 1:
+		return 4, 7
+	case 2:
+		return 5, 8
+	case 3:
+		return 0, 6
+	case 4:
+		return 1, 7
+	case 5:
+		return 2, 8
+	case 6:
+		return 0, 3
+	case 7:
+		return 1, 7
+	case 8:
+		return 2, 5
+	default:
+		log.Panicln("out of bounds")
+		return 0, 0
+	}
+}
