@@ -54,34 +54,22 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 	}
 
 	p.check()
-
 	p.updateToSolve()
-	p.updatePossibilities()
 
 	return p
 }
 
 func (p *Puzzle) updatePossibilities() {
 	for r := byte(0); r < mx; r++ {
-		row := p.Row(r)
 		for c := byte(0); c < mx; c++ {
 			if p.Cells[r][c].Value != 0 {
 				continue
 			}
 
-			column := p.Column(c)
-			square := p.Square(whichSquare(r, c))
-			var b []byte
-
-			for _, pos := range p.Cells[r][c].Pos {
-				if !contains(row, column, square, pos) {
-					b = append(b, pos)
-				}
-			}
-
-			p.Cells[r][c].Pos = b
+			p.Possibles(r, c)
 		}
 	}
+	p.updateToSolve()
 }
 
 func (p *Puzzle) updateToSolve() {
@@ -94,20 +82,20 @@ func (p *Puzzle) updateToSolve() {
 }
 
 func (p *Puzzle) Solve() {
+	p.updatePossibilities()
+
 	var prev int
 	for p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() {
 		prev = p.UnsolvedCells()
 
-		for i := range p.Cells {
-			for j := range p.Cells[i] {
-				if p.Cells[i][j].Value != 0 {
+		for r := byte(0); r < mx; r++ {
+			for c := byte(0); c < mx; c++ {
+				if p.Cells[r][c].Value != 0 {
 					continue
 				}
 
-				p.Possibles(byte(i), byte(j))
-
-				for _, pos := range p.Cells[byte(i)][byte(j)].Pos {
-					p.RowCanHaveNumber(pos, byte(i))
+				for _, pos := range p.Cells[r][c].Pos {
+					p.RowCanHaveNumber(pos, r)
 				}
 			}
 		}
@@ -165,6 +153,34 @@ func (p *Puzzle) solvedCell(cell *Cell, value byte) {
 	cell.Pos = nil
 	p.ValueQty[0]--
 	p.ValueQty[value]++
+	p.Print()
+
+	// Update adjacent cell possibilities.
+	p.Row(cell.row).RemovePos(value, p)
+	p.Column(cell.col).RemovePos(value, p)
+	p.Square(whichSquare(cell.row, cell.col)).RemovePos(value, p)
+}
+
+func (g *Group) RemovePos(value byte, p *Puzzle) {
+	for _, cell := range g {
+		if cell.Value != 0 {
+			continue
+		}
+
+		cell.Pos = removeValue(cell.Pos, value)
+		if len(cell.Pos) == 1 {
+			p.solvedCell(cell, cell.Pos[0])
+		}
+	}
+}
+
+func removeValue(pos []byte, value byte) []byte {
+	for i, p := range pos {
+		if p == value {
+			return Remove(pos, i)
+		}
+	}
+	return pos
 }
 
 func tern(cond bool) string {
@@ -189,7 +205,7 @@ func canFillIn(r [mx]bool) (_ bool, index byte) {
 }
 
 func (p *Puzzle) Print() {
-	fmt.Printf("___________________\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n___________________\n", printRow(p.Cells[0]), printRow(p.Cells[1]), printRow(p.Cells[2]), printRow(p.Cells[3]), printRow(p.Cells[4]), printRow(p.Cells[5]), printRow(p.Cells[6]), printRow(p.Cells[7]), printRow(p.Cells[8]))
+	fmt.Printf("____1___3___5___7___\n0%v\n1%v\n2%v\n3%v\n4%v\n5%v\n6%v\n7%v\n8%v\n____1___3___5___7___\n", printRow(p.Cells[0]), printRow(p.Cells[1]), printRow(p.Cells[2]), printRow(p.Cells[3]), printRow(p.Cells[4]), printRow(p.Cells[5]), printRow(p.Cells[6]), printRow(p.Cells[7]), printRow(p.Cells[8]))
 	fmt.Println("unsolved cell quantity:", p.UnsolvedCells())
 }
 
