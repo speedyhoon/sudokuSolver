@@ -19,8 +19,9 @@ type Puzzle struct {
 }
 
 type Cell struct {
-	Value byte
-	Pos   []byte // Possibilities.
+	Value    byte
+	Pos      []byte // Possibilities.
+	row, col byte
 }
 
 func (p *Puzzle) UnsolvedCells() (u int) {
@@ -36,6 +37,9 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 		}
 
 		for j, cell := range row {
+			p.Cells[i][j].row = byte(i)
+			p.Cells[i][j].col = byte(j)
+
 			// Ignore non numeric runes.
 			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
