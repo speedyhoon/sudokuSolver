@@ -8,8 +8,9 @@ import (
 
 func TestPuzzle_Solve(t *testing.T) {
 	tests := []struct {
-		input [mx]string
-		want  string
+		input     [mx]string
+		want      string
+		remaining int
 	}{
 		{
 			input: [mx]string{
@@ -23,6 +24,7 @@ func TestPuzzle_Solve(t *testing.T) {
 				"      1  ",
 				"8   9    ",
 			},
+			remaining: 0,
 			want: `___________________
 [2 6 5 4 7 8 3 1 9]
 [4 3 1 9 2 5 8 7 6]
@@ -49,6 +51,7 @@ unsolved cell quantity: 0
 				"5 4   3 1",
 				" 1     2 ",
 			},
+			remaining: 0,
 			want: `___________________
 [7 5 9 3 4 2 6 1 8]
 [3 8 2 1 5 6 9 4 7]
@@ -75,6 +78,7 @@ unsolved cell quantity: 0
 				"  1    5 ",
 				"75  4 9 2",
 			},
+			remaining: 0,
 			want: `___________________
 [3 7 8 5 1 9 4 2 6]
 [6 1 9 2 3 4 7 8 5]
@@ -87,6 +91,60 @@ unsolved cell quantity: 0
 [7 5 3 6 4 8 9 1 2]
 ___________________
 unsolved cell quantity: 0
+`,
+		},
+		{
+			input: [mx]string{
+				"7  5    1",
+				"   19  4 ",
+				"      67 ",
+				" 9   4   ",
+				" 3      7",
+				"   2  58 ",
+				"  8      ",
+				" 52 7   9",
+				"  38   6 ",
+			},
+			remaining: 48,
+			want: `___________________
+[7 . . 5 . . . . 1]
+[. . . 1 9 7 . 4 .]
+[. . 9 . . . 6 7 .]
+[. 9 . 7 . 4 . . .]
+[. 3 . 6 . . . . 7]
+[. . 7 2 . 9 5 8 .]
+[. . 8 9 . . . 5 .]
+[. 5 2 . 7 . 8 . 9]
+[9 . 3 8 . . . 6 .]
+___________________
+unsolved cell quantity: 48
+`,
+		},
+		{
+			input: [mx]string{
+				"4 67   85",
+				" 8    9  ",
+				"    5 1  ",
+				"3  9     ",
+				"        1",
+				" 4  3  56",
+				" 6  9  43",
+				"      8  ",
+				"  7  2   ",
+			},
+			remaining: 36,
+			want: `___________________
+[7 . . 5 . . . . 1]
+[. . . 1 9 7 . 4 .]
+[. . 9 . . . 6 7 .]
+[. 9 . 7 . 4 . . .]
+[. 3 . 6 . . . . 7]
+[. . 7 2 . 9 5 8 .]
+[. . 8 9 . . . 5 .]
+[. 5 2 . 7 . 8 . 9]
+[9 . 3 8 . . . 6 .]
+___________________
+unsolved cell quantity: 48
 `,
 		},
 		/*{
@@ -151,7 +209,7 @@ unsolved cell quantity: 0
 				tt.input[6], tt.input[7], tt.input[8],
 			)
 			p.Solve()
-			assert.Equal(t, 0, p.UnsolvedCells())
+			assert.Equal(t, tt.remaining, p.UnsolvedCells())
 			assert.Equal(t, tt.want, p.Printer())
 		})
 	}
