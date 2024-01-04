@@ -96,6 +96,7 @@ func (p *Puzzle) Solve() {
 
 				for _, pos := range p.Cells[r][c].Pos {
 					p.RowCanHaveNumber(pos, r)
+					p.ColCanHaveNumber(pos, c)
 				}
 			}
 		}
@@ -111,9 +112,10 @@ func (p *Puzzle) Solve() {
 
 func (p *Puzzle) RowCanHaveNumber(val byte, r byte) {
 	var qty, lastIndex byte
+	rowHasNum := p.Row(r).hasNumber(val)
 	for i, b := range p.Row(r) {
 		c := byte(i)
-		if b.Value != 0 || p.Row(r).hasNumber(val) || p.Column(c).hasNumber(val) || p.Square(whichSquare(r, c)).hasNumber(val) {
+		if b.Value != 0 || rowHasNum || p.Column(c).hasNumber(val) || p.Square(whichSquare(r, c)).hasNumber(val) {
 			continue
 		}
 
@@ -122,6 +124,23 @@ func (p *Puzzle) RowCanHaveNumber(val byte, r byte) {
 	}
 	if qty == 1 {
 		p.solvedCell(&p.Cells[r][lastIndex], val)
+	}
+}
+
+func (p *Puzzle) ColCanHaveNumber(val byte, c byte) {
+	var qty, lastIndex byte
+	colHasNum := p.Column(c).hasNumber(val)
+	for i, b := range p.Column(c) {
+		r := byte(i)
+		if b.Value != 0 || p.Row(r).hasNumber(val) || colHasNum || p.Square(whichSquare(r, c)).hasNumber(val) {
+			continue
+		}
+
+		qty++
+		lastIndex = r
+	}
+	if qty == 1 {
+		p.solvedCell(&p.Cells[lastIndex][c], val)
 	}
 }
 

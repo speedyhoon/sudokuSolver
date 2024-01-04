@@ -132,11 +132,11 @@ unsolved cell quantity: 48
 				"      8  ",
 				"  7  2   ",
 			},
-			remaining: 37,
+			remaining: 36,
 			want: `___________________
 [4 . 6 7 1 . 2 8 5]
 [. 8 . . . . 9 . .]
-[. . . . 5 . 1 . .]
+[. 2 . . 5 . 1 . .]
 [3 . . 9 7 6 4 2 8]
 [6 7 . . . . 3 9 1]
 [. 4 . . 3 . 7 5 6]
@@ -144,7 +144,7 @@ unsolved cell quantity: 48
 [. . 4 . 6 . 8 7 2]
 [. . 7 . . 2 6 1 9]
 ___________________
-unsolved cell quantity: 37
+unsolved cell quantity: 36
 `,
 		},
 		/*{
