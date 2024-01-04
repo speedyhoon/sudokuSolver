@@ -23,8 +23,8 @@ type Cell struct {
 	Pos   []byte // Possibilities.
 }
 
-func (p *Puzzle) UnsolvedCells() (u byte) {
-	return p.ValueQty[0]
+func (p *Puzzle) UnsolvedCells() (u int) {
+	return int(p.ValueQty[0])
 }
 
 func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle) {
@@ -65,7 +65,7 @@ func (p *Puzzle) updateToSolve() {
 }
 
 func (p *Puzzle) Solve() {
-	var prev byte
+	var prev int
 	for p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() {
 		prev = p.UnsolvedCells()
 
@@ -162,6 +162,10 @@ func canFillIn(r [mx]bool) (_ bool, index byte) {
 func (p *Puzzle) Print() {
 	fmt.Printf("___________________\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n___________________\n", printRow(p.Cells[0]), printRow(p.Cells[1]), printRow(p.Cells[2]), printRow(p.Cells[3]), printRow(p.Cells[4]), printRow(p.Cells[5]), printRow(p.Cells[6]), printRow(p.Cells[7]), printRow(p.Cells[8]))
 	fmt.Println("unsolved cell quantity:", p.UnsolvedCells())
+}
+
+func (p *Puzzle) Printer() string {
+	return fmt.Sprintf("___________________\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n%v\n___________________\nunsolved cell quantity: %d\n", printRow(p.Cells[0]), printRow(p.Cells[1]), printRow(p.Cells[2]), printRow(p.Cells[3]), printRow(p.Cells[4]), printRow(p.Cells[5]), printRow(p.Cells[6]), printRow(p.Cells[7]), printRow(p.Cells[8]), p.UnsolvedCells())
 }
 
 func printRow(r [mx]Cell) (s string) {
