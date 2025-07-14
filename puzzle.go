@@ -28,8 +28,12 @@ func (p *Puzzle) UnsolvedCells() (u int) {
 	return int(p.ValueQty[0])
 }
 
+func allPossibles() []byte {
+	return []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
+}
+
 func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle) {
-	p.ToSolve = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
+	p.ToSolve = allPossibles()
 
 	for r, row := range []string{row1, row2, row3, row4, row5, row6, row7, row8, row9} {
 		if len(row) != int(mx) {
@@ -43,7 +47,7 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 			// Ignore non numeric runes.
 			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
-				p.Cells[r][c].Possibilities = p.ToSolve
+				p.Cells[r][c].Possibilities = allPossibles()
 				continue
 			}
 
