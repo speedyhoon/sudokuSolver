@@ -45,7 +45,7 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 			p.Cells[r][c].col = byte(c)
 
 			// Ignore non numeric runes.
-			if cell <= '0' || cell > '9' {
+			if cell < '1' || cell > '9' {
 				p.ValueQty[0]++
 				p.Cells[r][c].Possibilities = allPossibles()
 				continue
