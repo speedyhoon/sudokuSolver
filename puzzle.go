@@ -31,25 +31,25 @@ func (p *Puzzle) UnsolvedCells() (u int) {
 func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle) {
 	p.ToSolve = []byte{1, 2, 3, 4, 5, 6, 7, 8, 9}
 
-	for i, row := range []string{row1, row2, row3, row4, row5, row6, row7, row8, row9} {
+	for r, row := range []string{row1, row2, row3, row4, row5, row6, row7, row8, row9} {
 		if len(row) != int(mx) {
-			log.Panicf("row %d length should be %d, not %d.", i, mx, len(row))
+			log.Panicf("row %d length should be %d, not %d.", r, mx, len(row))
 		}
 
-		for j, cell := range row {
-			p.Cells[i][j].row = byte(i)
-			p.Cells[i][j].col = byte(j)
+		for c, cell := range row {
+			p.Cells[r][c].row = byte(r)
+			p.Cells[r][c].col = byte(c)
 
 			// Ignore non numeric runes.
 			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
-				p.Cells[i][j].Pos = p.ToSolve
+				p.Cells[r][c].Pos = p.ToSolve
 				continue
 			}
 
 			value := byte(cell - '0')
 			p.ValueQty[value]++
-			p.Cells[i][j].Value = value
+			p.Cells[r][c].Value = value
 		}
 	}
 
