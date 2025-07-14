@@ -109,18 +109,18 @@ func (p *Puzzle) Possibles(r, c byte) {
 	row := p.Row(r)
 	column := p.Column(c)
 	square := p.Square(whichSquare(r, c))
-	var b []byte
+	var possibles []byte
 
 	for _, list := range p.Cells[r][c].Pos {
 		if !contains(row, column, square, list) {
-			b = append(b, list)
+			possibles = append(possibles, list)
 		}
 	}
 
-	if len(b) == 1 {
-		p.solvedCell(&p.Cells[r][c], b[0])
+	if len(possibles) == 1 {
+		p.solvedCell(&p.Cells[r][c], possibles[0])
 	} else {
-		p.Cells[r][c].Pos = b
+		p.Cells[r][c].Pos = possibles
 	}
 }
 
