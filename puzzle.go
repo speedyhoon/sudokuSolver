@@ -19,9 +19,9 @@ type Puzzle struct {
 }
 
 type Cell struct {
-	Value    byte
-	Pos      []byte // Possibilities.
-	row, col byte
+	Value         byte
+	Possibilities []byte
+	row, col      byte
 }
 
 func (p *Puzzle) UnsolvedCells() (u int) {
@@ -43,7 +43,7 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 			// Ignore non numeric runes.
 			if cell <= '0' || cell > '9' {
 				p.ValueQty[0]++
-				p.Cells[r][c].Pos = p.ToSolve
+				p.Cells[r][c].Possibilities = p.ToSolve
 				continue
 			}
 
@@ -93,17 +93,17 @@ func (p *Puzzle) Solve() {
 					continue
 				}
 
-				for i := 0; i < len(p.Cells[r][c].Pos); i++ {
-					pos := p.Cells[r][c].Pos[i]
+				for i := 0; i < len(p.Cells[r][c].Possibilities); i++ {
+					pos := p.Cells[r][c].Possibilities[i]
 					if p.Cells[r][c].ColHasNum(p, pos) {
-						p.Cells[r][c].Pos = Remove(p.Cells[r][c].Pos, i)
+						p.Cells[r][c].Possibilities = Remove(p.Cells[r][c].Possibilities, i)
 						i--
 					}
-					if len(p.Cells[r][c].Pos) == 1 {
-						p.solvedCell(&p.Cells[r][c], p.Cells[r][c].Pos[0])
+					if len(p.Cells[r][c].Possibilities) == 1 {
+						p.solvedCell(&p.Cells[r][c], p.Cells[r][c].Possibilities[0])
 					}
 				}
-				for _, pos := range p.Cells[r][c].Pos {
+				for _, pos := range p.Cells[r][c].Possibilities {
 					p.RowCanHaveNumber(pos, r)
 					p.ColCanHaveNumber(pos, c)
 				}
@@ -178,7 +178,7 @@ func (p *Puzzle) solveOnly1s(number byte) {
 
 func (p *Puzzle) solvedCell(cell *Cell, value byte) {
 	cell.Value = value
-	cell.Pos = nil
+	cell.Possibilities = nil
 	p.ValueQty[0]--
 	p.ValueQty[value]++
 	p.Print()
@@ -195,9 +195,9 @@ func (g *Group) RemovePos(value byte, p *Puzzle) {
 			continue
 		}
 
-		cell.Pos = removeValue(cell.Pos, value)
-		if len(cell.Pos) == 1 {
-			p.solvedCell(cell, cell.Pos[0])
+		cell.Possibilities = removeValue(cell.Possibilities, value)
+		if len(cell.Possibilities) == 1 {
+			p.solvedCell(cell, cell.Possibilities[0])
 		}
 	}
 }
