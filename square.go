@@ -5,28 +5,28 @@ import (
 )
 
 const (
-	topLeft byte = iota
-	topCent
-	topRight
-	midLeft
-	center
-	midRight
-	bottomLeft
-	bottomCent
-	bottomRight
+	topLeft  byte = iota // Top Left
+	topCen               // Top Center
+	topRight             // Top Right
+	midLeft              // Middle Left
+	center               // Middle Center
+	midRight             // Middle Right
+	botLeft              // Bottom Left
+	botCen               // Bottom Cent
+	botRight             // Bottom Right
 )
 
 func whichSquare(row, col byte) byte {
 	return [mx][mx]byte{
-		{0, 0, 0, 1, 1, 1, 2, 2, 2},
-		{0, 0, 0, 1, 1, 1, 2, 2, 2},
-		{0, 0, 0, 1, 1, 1, 2, 2, 2},
-		{3, 3, 3, 4, 4, 4, 5, 5, 5},
-		{3, 3, 3, 4, 4, 4, 5, 5, 5},
-		{3, 3, 3, 4, 4, 4, 5, 5, 5},
-		{6, 6, 6, 7, 7, 7, 8, 8, 8},
-		{6, 6, 6, 7, 7, 7, 8, 8, 8},
-		{6, 6, 6, 7, 7, 7, 8, 8, 8},
+		{topLeft, topLeft, topLeft, topCen, topCen, topCen, topRight, topRight, topRight},
+		{topLeft, topLeft, topLeft, topCen, topCen, topCen, topRight, topRight, topRight},
+		{topLeft, topLeft, topLeft, topCen, topCen, topCen, topRight, topRight, topRight},
+		{midLeft, midLeft, midLeft, center, center, center, midRight, midRight, midRight},
+		{midLeft, midLeft, midLeft, center, center, center, midRight, midRight, midRight},
+		{midLeft, midLeft, midLeft, center, center, center, midRight, midRight, midRight},
+		{botLeft, botLeft, botLeft, botCen, botCen, botCen, botRight, botRight, botRight},
+		{botLeft, botLeft, botLeft, botCen, botCen, botCen, botRight, botRight, botRight},
+		{botLeft, botLeft, botLeft, botCen, botCen, botCen, botRight, botRight, botRight},
 	}[row][col]
 }
 
@@ -38,7 +38,7 @@ func (p *Puzzle) Square(index byte) *Group {
 			&p.Cells[1][0], &p.Cells[1][1], &p.Cells[1][2],
 			&p.Cells[2][0], &p.Cells[2][1], &p.Cells[2][2],
 		}
-	case topCent:
+	case topCen:
 		return &Group{
 			&p.Cells[0][3], &p.Cells[0][4], &p.Cells[0][5],
 			&p.Cells[1][3], &p.Cells[1][4], &p.Cells[1][5],
@@ -68,19 +68,19 @@ func (p *Puzzle) Square(index byte) *Group {
 			&p.Cells[4][6], &p.Cells[4][7], &p.Cells[4][8],
 			&p.Cells[5][6], &p.Cells[5][7], &p.Cells[5][8],
 		}
-	case bottomLeft:
+	case botLeft:
 		return &Group{
 			&p.Cells[6][0], &p.Cells[6][1], &p.Cells[6][2],
 			&p.Cells[7][0], &p.Cells[7][1], &p.Cells[7][2],
 			&p.Cells[8][0], &p.Cells[8][1], &p.Cells[8][2],
 		}
-	case bottomCent:
+	case botCen:
 		return &Group{
 			&p.Cells[6][3], &p.Cells[6][4], &p.Cells[6][5],
 			&p.Cells[7][3], &p.Cells[7][4], &p.Cells[7][5],
 			&p.Cells[8][3], &p.Cells[8][4], &p.Cells[8][5],
 		}
-	case bottomRight:
+	case botRight:
 		return &Group{
 			&p.Cells[6][6], &p.Cells[6][7], &p.Cells[6][8],
 			&p.Cells[7][6], &p.Cells[7][7], &p.Cells[7][8],
@@ -132,7 +132,7 @@ func squareBool(p [mx][mx]bool, index byte) [mx]bool {
 			p[1][0], p[1][1], p[1][2],
 			p[2][0], p[2][1], p[2][2],
 		}
-	case topCent:
+	case topCen:
 		return [mx]bool{
 			p[0][3], p[0][4], p[0][5],
 			p[1][3], p[1][4], p[1][5],
@@ -162,19 +162,19 @@ func squareBool(p [mx][mx]bool, index byte) [mx]bool {
 			p[4][6], p[4][7], p[4][8],
 			p[5][6], p[5][7], p[5][8],
 		}
-	case bottomLeft:
+	case botLeft:
 		return [mx]bool{
 			p[6][0], p[6][1], p[6][2],
 			p[7][0], p[7][1], p[7][2],
 			p[8][0], p[8][1], p[8][2],
 		}
-	case bottomCent:
+	case botCen:
 		return [mx]bool{
 			p[6][3], p[6][4], p[6][5],
 			p[7][3], p[7][4], p[7][5],
 			p[8][3], p[8][4], p[8][5],
 		}
-	case bottomRight:
+	case botRight:
 		return [mx]bool{
 			p[6][6], p[6][7], p[6][8],
 			p[7][6], p[7][7], p[7][8],
@@ -226,26 +226,26 @@ func (c *Cell) hasPos(number byte) bool {
 
 func adjacentSquaresVertical(squareIndex byte) (top byte, bottom byte) {
 	switch squareIndex {
-	case 0:
-		return 3, 6
-	case 1:
-		return 4, 7
-	case 2:
-		return 5, 8
-	case 3:
-		return 0, 6
-	case 4:
-		return 1, 7
-	case 5:
-		return 2, 8
-	case 6:
-		return 0, 3
-	case 7:
-		return 1, 7
-	case 8:
-		return 2, 5
+	case topLeft:
+		return midLeft, botLeft
+	case topCen:
+		return center, botCen
+	case topRight:
+		return midRight, botRight
+	case midLeft:
+		return topLeft, botLeft
+	case center:
+		return topCen, botCen
+	case midRight:
+		return topRight, botRight
+	case botLeft:
+		return topLeft, midLeft
+	case botCen:
+		return topCen, center
+	case botRight:
+		return topRight, midRight
 	default:
 		log.Panicln("out of bounds")
-		return 0, 0
+		return
 	}
 }
