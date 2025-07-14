@@ -85,10 +85,8 @@ func (p *Puzzle) Solve() {
 	p.updatePossibilities()
 
 	var prev int
-	z := 0
 	for p.UnsolvedCells() > 0 && prev != p.UnsolvedCells() {
 		prev = p.UnsolvedCells()
-		z++
 		for r := byte(0); r < mx; r++ {
 			for c := byte(0); c < mx; c++ {
 				if p.Cells[r][c].Value != 0 {
