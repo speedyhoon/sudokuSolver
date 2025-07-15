@@ -215,6 +215,25 @@ func (g *Group) squareColHasNum(col, number byte) bool {
 	return false
 }
 
+func (g *Group) squareRowHasNum(row, number byte) bool {
+	row1 := g[0].hasPos(number) || g[1].hasPos(number) || g[2].hasPos(number)
+	row2 := g[3].hasPos(number) || g[4].hasPos(number) || g[5].hasPos(number)
+	row3 := g[6].hasPos(number) || g[7].hasPos(number) || g[8].hasPos(number)
+
+	// Convert row index into square row index.
+	switch row % 3 {
+	case 0:
+		return row1 && !row2 && !row3
+	case 1:
+		return !row1 && row2 && !row3
+	case 2:
+		return !row1 && !row2 && row3
+	}
+
+	log.Panicf("not a valid row %d", row)
+	return false
+}
+
 func (c *Cell) hasPos(number byte) bool {
 	for _, pos := range c.Possibilities {
 		if pos == number {
@@ -244,6 +263,32 @@ func adjacentSquaresVertical(squareIndex byte) (top byte, bottom byte) {
 		return topCen, center
 	case botRight:
 		return topRight, midRight
+	default:
+		log.Panicln("out of bounds")
+		return
+	}
+}
+
+func adjacentSquaresHorizontal(squareIndex byte) (left byte, right byte) {
+	switch squareIndex {
+	case topLeft:
+		return topCen, topRight
+	case topCen:
+		return topLeft, topRight
+	case topRight:
+		return topLeft, topCen
+	case midLeft:
+		return center, midRight
+	case center:
+		return midLeft, midRight
+	case midRight:
+		return midLeft, center
+	case botLeft:
+		return botCen, botRight
+	case botCen:
+		return botLeft, botRight
+	case botRight:
+		return botLeft, botCen
 	default:
 		log.Panicln("out of bounds")
 		return

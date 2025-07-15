@@ -99,7 +99,7 @@ func (p *Puzzle) Solve() {
 
 				for i := 0; i < len(p.Cells[r][c].Possibilities); i++ {
 					pos := p.Cells[r][c].Possibilities[i]
-					if p.Cells[r][c].ColHasNum(p, pos) {
+					if p.Cells[r][c].ColHasNum(p, pos) || p.Cells[r][c].RowHasNum(p, pos) {
 						p.Cells[r][c].Possibilities = Remove(p.Cells[r][c].Possibilities, i)
 						i--
 					}
