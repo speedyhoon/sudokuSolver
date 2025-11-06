@@ -58,8 +58,6 @@ func Load(row1, row2, row3, row4, row5, row6, row7, row8, row9 string) (p Puzzle
 	}
 
 	p.check()
-	p.updateToSolve()
-
 	return p
 }
 
@@ -73,14 +71,15 @@ func (p *Puzzle) updatePossibilities() {
 			p.Possibles(r, c)
 		}
 	}
-	p.updateToSolve()
 }
 
-func (p *Puzzle) updateToSolve() {
-	for i := 0; i < len(p.ToSolve); i++ {
-		if p.ValueQty[p.ToSolve[i]] == 0 {
-			Remove(p.ToSolve, i)
-			i--
+func (p *Puzzle) updateToSolve(number byte) {
+	if p.ValueQty[number] == mx {
+		for i, n := range p.ToSolve {
+			if n == number {
+				p.ToSolve = Remove(p.ToSolve, i)
+				return
+			}
 		}
 	}
 }
@@ -118,7 +117,6 @@ func (p *Puzzle) Solve() {
 			p.solveOnly1s(number)
 		}
 
-		p.updateToSolve()
 		log.Println("unsolved cell quantity:", p.UnsolvedCells(), "to complete:", p.ToSolve)
 	}
 }
@@ -185,6 +183,7 @@ func (p *Puzzle) solvedCell(cell *Cell, value byte) {
 	cell.Possibilities = nil
 	p.ValueQty[0]--
 	p.ValueQty[value]++
+	p.updateToSolve(value)
 	p.Print()
 
 	// Update adjacent cell possibilities.
