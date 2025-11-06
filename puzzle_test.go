@@ -105,9 +105,9 @@ unsolved cell quantity: 0
 				" 52 7   9",
 				"  38   6 ",
 			},
-			remaining: 48,
+			remaining: 47,
 			want: `___________________
-[7 . . 5 . . . . 1]
+[7 . 4 5 . . . . 1]
 [. . . 1 9 7 . 4 .]
 [. . 9 . . . 6 7 .]
 [. 9 . 7 . 4 . . .]
@@ -117,7 +117,7 @@ unsolved cell quantity: 0
 [. 5 2 . 7 . 8 . 9]
 [9 . 3 8 . . . 6 .]
 ___________________
-unsolved cell quantity: 48
+unsolved cell quantity: 47
 `,
 		},
 		{
